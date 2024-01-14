@@ -1,0 +1,30 @@
+version: "3.6"
+
+services:
+  app:
+    build: ./
+    container_name: GAN_API
+    volumes:
+      - ./:/API
+    ports: 
+      - 5000:8080
+    networks:
+      - gannetwork
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
+    networks:
+      - gannetwork
+
+networks:
+  gannetwork:
+    driver: bridge

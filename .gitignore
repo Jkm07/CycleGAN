@@ -1,0 +1,8 @@
+#Python files
+.ipynb_checkpoints/
+__pycache__/
+
+#My files
+data/
+API/cycleGAN/
+API/ngrok.yml

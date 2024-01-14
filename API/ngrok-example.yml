@@ -1,0 +1,8 @@
+authtoken: #Tu wklej swój authtoken ze strony ngrocka
+console_ui: true
+region: eu
+version: 2
+tunnels:
+  website:
+    addr: GAN_API:8080
+    proto: http

@@ -1,0 +1,69 @@
+<!doctype html>
+
+<head>
+  <title>Monet Generator</title>
+</head>
+
+<body>
+  <h1>Monet Generator</h1>
+  <div>
+    <input type="file" id="image" name="image" accept="image/png, image/jpeg" onchange="insertPhoto()"/>
+    <input type="button" value="Monet" onclick="sendImage('/convert', 'monetImage')">
+    <input type="button" value="Umonet" onclick="sendImage('/unconvert', 'unmonetImage')">
+  </div>
+  <img id="orginalImage" width="512" height="512">
+  <img id="monetImage" width="512" height="512">
+  <img id="unmonetImage" width="512" height="512">
+  <script>
+    async function insertPhoto() {
+
+      const inputElement = document.getElementById('image');
+      const file = inputElement.files[0];
+      var imageDisplay = document.getElementById('orginalImage');
+      if (file) {
+        const fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            imageDisplay.src = e.target.result;
+          };
+        fileReader.readAsDataURL(file)
+      }
+    }
+
+    async function sendImage(endpoint, hookId) {
+      const inputElement = document.getElementById('image');
+      const file = inputElement.files[0];
+
+      if(!file) {
+        console.log("Failed")
+      }
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const imageData = await response.arrayBuffer();
+
+        // Convert the image data to a base64-encoded string
+        const base64Image = arrayBufferToBase64(imageData);
+
+        // Set the source of the image element
+        document.getElementById(hookId).src = `data:image/jpeg;base64,${base64Image}`;
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    }
+
+    // Function to convert an array buffer to a base64-encoded string
+    function arrayBufferToBase64(buffer) {
+      const binary = Array.from(new Uint8Array(buffer)).map(byte => String.fromCharCode(byte)).join('');
+      return btoa(binary);
+    }
+  </script>
+</body>
